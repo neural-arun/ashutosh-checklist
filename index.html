@@ -37,6 +37,15 @@
         .notes-section.show {
             max-height: 300px; /* Adjust as needed */
         }
+        /* Custom styles for number input to hide arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800">
@@ -46,7 +55,8 @@
         <header class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900">NEET Dropper Roadmap</h1>
             <p class="text-xl md:text-2xl text-blue-600 mt-2">Welcome, Ashutosh Yadav!</p>
-            <p class="text-md text-gray-600 mt-1">Your daily checklist for September to conquer NEET.</p>
+            <p class="text-lg text-indigo-600 font-semibold mt-1">हर दिन, एक कदम मंज़िल के करीब।</p>
+            <p class="text-md text-gray-600 mt-2">Your daily checklist for September to conquer NEET.</p>
         </header>
 
         <!-- Progress Bar Section -->
@@ -60,7 +70,7 @@
         </div>
 
         <!-- Checklist Grid -->
-        <main id="checklist-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <main id="checklist-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <!-- Day cards will be injected here by JavaScript -->
         </main>
 
@@ -120,30 +130,38 @@
                         <div>
                             <p class="font-semibold text-blue-700 text-sm mb-2">Lectures</p>
                             <div class="space-y-2 pl-2">
-                                <label for="${dayId}-task1" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task1" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Physics Lecture</span></label>
-                                <label for="${dayId}-task2" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task2" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Chemistry Lecture</span></label>
-                                <label for="${dayId}-task3" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task3" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Biology Lecture</span></label>
+                                <label for="${dayId}-task1" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task1" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Physics Lecture</span></label>
+                                <label for="${dayId}-task2" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task2" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Chemistry Lecture</span></label>
+                                <label for="${dayId}-task3" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task3" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Biology Lecture</span></label>
                             </div>
                         </div>
 
                         <div>
-                            <p class="font-semibold text-blue-700 text-sm mb-2">Self-Study</p>
+                            <p class="font-semibold text-blue-700 text-sm mb-2">NCERT</p>
                              <div class="space-y-2 pl-2">
-                                <label for="${dayId}-task4" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task4" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Read NCERT (3 Hours)</span></label>
+                                <label for="${dayId}-task4" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task4" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Read NCERT (3 Hours)</span></label>
                             </div>
                         </div>
                         
                         <div>
                             <p class="font-semibold text-blue-700 text-sm mb-2">MCQ Practice</p>
                             <div class="space-y-2 pl-2">
-                                <label for="${dayId}-task5" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task5" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">45 Physics MCQs</span></label>
-                                <label for="${dayId}-task6" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task6" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">45 Chemistry MCQs</span></label>
-                                <label for="${dayId}-task7" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task7" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">90 Biology MCQs</span></label>
+                                <label for="${dayId}-task5" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task5" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">45 Physics MCQs</span></label>
+                                <label for="${dayId}-task6" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task6" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">45 Chemistry MCQs</span></label>
+                                <label for="${dayId}-task7" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task7" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">90 Biology MCQs</span></label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-blue-700 text-sm mb-2">Self-Study Tracker</p>
+                             <div class="space-y-2 pl-2 flex items-center">
+                                <input type="number" id="${dayId}-study-hours" class="w-20 p-1.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="0">
+                                <span class="ml-3 text-gray-700">Total Hours Studied</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="mt-6">
                         <h4 class="font-semibold text-sm text-gray-600 mb-2">Daily Analysis & Notes</h4>
                         <textarea id="${dayId}-notes" class="w-full h-28 p-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="What I did right...\nWhat I did wrong...\nWhat to improve for tomorrow..."></textarea>
                     </div>
@@ -156,16 +174,12 @@
             }
         }
 
-        // Function to check completion status for a given day
-        function checkDayCompletion(dayIndex) {
+        // Function to check completion status and save state
+        function saveData(dayIndex) {
             const dayId = `day-${dayIndex}`;
-            const tasks = [
-                document.getElementById(`${dayId}-task1`), document.getElementById(`${dayId}-task2`),
-                document.getElementById(`${dayId}-task3`), document.getElementById(`${dayId}-task4`),
-                document.getElementById(`${dayId}-task5`), document.getElementById(`${dayId}-task6`),
-                document.getElementById(`${dayId}-task7`)
-            ];
+            const tasks = Array.from({length: 7}, (_, i) => document.getElementById(`${dayId}-task${i + 1}`));
             const notes = document.getElementById(`${dayId}-notes`);
+            const studyHours = document.getElementById(`${dayId}-study-hours`);
             const motivationDiv = document.getElementById(`${dayId}-motivation`);
             const dayCard = document.getElementById(dayId);
 
@@ -182,7 +196,8 @@
             // Save state to localStorage
             const dayState = {
                 tasks: tasks.map(task => task.checked),
-                notes: notes.value
+                notes: notes.value,
+                studyHours: studyHours.value
             };
             localStorage.setItem(`neet-roadmap-ashutosh-${dayId}`, JSON.stringify(dayState));
 
@@ -196,19 +211,17 @@
                 const savedState = localStorage.getItem(`neet-roadmap-ashutosh-${dayId}`);
                 if (savedState) {
                     const dayState = JSON.parse(savedState);
-                    const tasks = [
-                        document.getElementById(`${dayId}-task1`), document.getElementById(`${dayId}-task2`),
-                        document.getElementById(`${dayId}-task3`), document.getElementById(`${dayId}-task4`),
-                        document.getElementById(`${dayId}-task5`), document.getElementById(`${dayId}-task6`),
-                        document.getElementById(`${dayId}-task7`)
-                    ];
+                    const tasks = Array.from({length: 7}, (_, j) => document.getElementById(`${dayId}-task${j + 1}`));
+                    
                     tasks.forEach((task, index) => {
                         if (dayState.tasks && dayState.tasks[index] !== undefined) {
                             task.checked = dayState.tasks[index];
                         }
                     });
                     document.getElementById(`${dayId}-notes`).value = dayState.notes || '';
-                    checkDayCompletion(i); // Re-validate and update UI
+                    document.getElementById(`${dayId}-study-hours`).value = dayState.studyHours || '';
+                    
+                    saveData(i); // Re-validate and update UI based on loaded state
                 }
             }
         }
@@ -218,12 +231,7 @@
             let completedDays = 0;
             for (let i = 1; i <= totalDays; i++) {
                 const dayId = `day-${i}`;
-                 const tasks = [
-                    document.getElementById(`${dayId}-task1`), document.getElementById(`${dayId}-task2`),
-                    document.getElementById(`${dayId}-task3`), document.getElementById(`${dayId}-task4`),
-                    document.getElementById(`${dayId}-task5`), document.getElementById(`${dayId}-task6`),
-                    document.getElementById(`${dayId}-task7`)
-                ];
+                 const tasks = Array.from({length: 7}, (_, j) => document.getElementById(`${dayId}-task${j + 1}`));
                 if (tasks.every(task => task && task.checked)) {
                     completedDays++;
                 }
@@ -237,13 +245,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             generateChecklist();
             
-            // Add event listeners to all checkboxes and textareas
+            // Add event listeners to all checkboxes, textareas, and inputs
             for (let i = 1; i <= totalDays; i++) {
                 const dayId = `day-${i}`;
                 for(let j = 1; j <= 7; j++) {
-                    document.getElementById(`${dayId}-task${j}`).addEventListener('change', () => checkDayCompletion(i));
+                    document.getElementById(`${dayId}-task${j}`).addEventListener('change', () => saveData(i));
                 }
-                document.getElementById(`${dayId}-notes`).addEventListener('input', () => checkDayCompletion(i));
+                document.getElementById(`${dayId}-notes`).addEventListener('input', () => saveData(i));
+                document.getElementById(`${dayId}-study-hours`).addEventListener('input', () => saveData(i));
             }
             
             loadState();
