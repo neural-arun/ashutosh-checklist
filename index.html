@@ -65,6 +65,13 @@
             </div>
         </div>
 
+        <!-- Calendar Navigation -->
+        <div class="mb-10 bg-white p-4 rounded-xl shadow-md">
+            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center">
+                <!-- Calendar will be injected here -->
+            </div>
+        </div>
+
         <!-- Checklist Grid -->
         <main id="checklist-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <!-- Day cards will be injected here by JavaScript -->
@@ -115,6 +122,58 @@
                 }
                 checklistGrid.appendChild(card);
                 if(dayOfWeek === 0) calculateWeeklyHours(i);
+            }
+        }
+
+        function generateCalendar() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'font-bold text-gray-600 text-sm';
+                dayEl.innerText = day;
+                calendarGrid.appendChild(dayEl);
+            });
+
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                const emptyCell = document.createElement('div');
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            for (let i = 1; i <= totalDays; i++) {
+                const date = new Date(year, month, i);
+                const dayOfWeek = date.getDay();
+                const bgColor = dayColors[dayOfWeek];
+
+                const dayWrapper = document.createElement('div');
+                dayWrapper.className = 'flex flex-col items-center';
+
+                const dayCell = document.createElement('button');
+                let classes = `p-2 w-10 h-10 flex items-center justify-center rounded-full focus:outline-none transition-all duration-200 hover:ring-2 hover:ring-offset-1 hover:ring-indigo-400 ${bgColor}`;
+                
+                if (dayOfWeek === 0) { // It's Sunday
+                    classes += ' font-bold text-red-700 border-2 border-red-300';
+                } else {
+                    classes += ' text-gray-700';
+                }
+
+                dayCell.className = classes;
+                dayCell.innerText = i;
+                dayCell.dataset.day = i;
+                
+                dayWrapper.appendChild(dayCell);
+
+                if (dayOfWeek === 0) {
+                    const hoursEl = document.createElement('span');
+                    hoursEl.id = `calendar-hours-${i}`;
+                    hoursEl.className = 'text-xs text-indigo-600 font-semibold mt-1';
+                    hoursEl.innerText = '0/70';
+                    dayWrapper.appendChild(hoursEl);
+                }
+
+                calendarGrid.appendChild(dayWrapper);
             }
         }
         
@@ -235,6 +294,13 @@
             }
             
             document.getElementById(`day-${sundayIndex}-weekly-hours`).innerText = `${totalHours.toFixed(1)} Hours`;
+            
+            // Update calendar hours display
+            const calendarHoursEl = document.getElementById(`calendar-hours-${sundayIndex}`);
+            if (calendarHoursEl) {
+                calendarHoursEl.innerText = `${totalHours.toFixed(1)}/70`;
+            }
+
             const weeklyProgressBar = document.getElementById(`day-${sundayIndex}-weekly-progress`);
             const percentage = Math.min(100, (totalHours / 70) * 100);
             weeklyProgressBar.style.width = `${percentage}%`;
@@ -351,7 +417,18 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             generateChecklist();
+            generateCalendar();
             
+            document.getElementById('calendar-grid').addEventListener('click', (e) => {
+                if (e.target.dataset.day) {
+                    const day = e.target.dataset.day;
+                    const targetCard = document.getElementById(`day-${day}`);
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+
             for (let i = 1; i <= totalDays; i++) {
                 const dayId = `day-${i}`;
                 const date = new Date(year, month, i);
@@ -375,6 +452,10 @@
     </script>
 </body>
 </html>
+
+
+
+
 
 
 
