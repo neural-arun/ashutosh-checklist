@@ -29,14 +29,6 @@
             background-color: #e6fffa; /* A light green for completed days */
             border-color: #38a169;
         }
-        .notes-section {
-            transition: all 0.3s ease-in-out;
-            max-height: 0;
-            overflow: hidden;
-        }
-        .notes-section.show {
-            max-height: 300px; /* Adjust as needed */
-        }
         /* Custom styles for number input to hide arrows */
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
@@ -45,6 +37,10 @@
         }
         input[type=number] {
             -moz-appearance: textfield;
+        }
+        .review-day {
+            background-image: linear-gradient(to right, #fef2f2, #f3f4f6, #eff6ff);
+            border-color: #6d28d9;
         }
     </style>
 </head>
@@ -80,179 +76,298 @@
         const checklistGrid = document.getElementById('checklist-grid');
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        const totalDays = 30;
+        const year = new Date().getFullYear();
+        const month = 8; // September is month 8 (0-indexed)
+        const totalDays = new Date(year, month + 1, 0).getDate();
 
         const motivationalQuotes = [
-            "सफलता का सफर मेहनत की राहों से ही होकर गुजरता है। शाबाश!",
-            "हर दिन एक नया मौका है, इसे व्यर्थ न जाने दें। बहुत अच्छे!",
-            "कोशिश करने वालों की कभी हार नहीं होती। लगे रहो!",
-            "तुम्हारा संकल्प ही तुम्हारी सबसे बड़ी ताकत है। बेहतरीन!",
-            "आज की मेहनत, कल तुम्हारे सपनों को हकीकत में बदलेगी। शानदार!",
-            "धीरज रखो, तुम्हारी मेहनत ज़रूर रंग लाएगी। बहुत बढ़िया!",
-            "सपनों को सच करने के लिए, पहले सपने देखना ज़रूरी है। उत्तम!",
-            "मुश्किलें केवल उन्हें मिलती हैं जो उन्हें हराने का दम रखते हैं।",
-            "जीत निश्चित है, अगर तुम हार मानने को तैयार नहीं हो।",
-            "तुम वो सब कर सकते हो जो तुम सोच सकते हो। आगे बढ़ो!",
-            "एक समय में एक दिन, और हर दिन पूरी लगन से।",
-            "संघर्ष जितना बड़ा होगा, जीत उतनी ही शानदार होगी।",
-            "खुद पर विश्वास रखो, तुम्हारे अंदर ब्रह्मांड की शक्ति है।",
-            "आज का दर्द, कल की जीत है। बहुत अच्छा काम!",
-            "सफलता उन्हें मिलती है जिनके इरादों में जान होती है।",
-            "हर छोटा कदम एक बड़ी मंजिल का हिस्सा है।",
-            "शिक्षा सबसे शक्तिशाली हथियार है जिसे आप दुनिया बदलने के लिए उपयोग कर सकते हैं।",
-            "अपने लक्ष्य को ऊंचा रखो और तब तक मत रुको जब तक तुम उसे हासिल नहीं कर लेते।",
-            "अगर तुम सूरज की तरह चमकना चाहते हो, तो पहले सूरज की तरह जलो।",
-            "समय सीमित है, इसे किसी और की जिंदगी जी कर बर्बाद मत करो।",
-            "कड़ी मेहनत का कोई विकल्प नहीं है।",
-            "गिरकर उठना और फिर से प्रयास करना ही असली जीत है।",
-            "जो पढ़ते हैं, वही लड़ते हैं।",
-            "तुम्हारी मेहनत तुम्हारा कल लिखेगी।",
-            "ज्ञान में निवेश सर्वोत्तम ब्याज देता है।",
-            "आत्म-विश्वास और कड़ी मेहनत, असफलता नामक बीमारी को मारने के लिए सबसे बढ़िया दवाई है।",
-            "सपनों को पाने के लिए समझदार नहीं, पागल बनना पड़ता है।",
-            "अगर आप महानता हासिल करना चाहते हैं तो इजाजत लेना बंद कर दें।",
-            "जो छात्र प्रश्न पूछता है, वह पाँच मिनट के लिए मूर्ख रहता है, लेकिन जो पूछता ही नहीं, वह हमेशा के लिए मूर्ख रहता है।",
-            "आज एक पाठक, कल एक नेता। मिशन पूरा हुआ!"
+            "सफलता का सफर मेहनत की राहों से ही होकर गुजरता है। शाबाश!", "हर दिन एक नया मौका है, इसे व्यर्थ न जाने दें। बहुत अच्छे!", "कोशिश करने वालों की कभी हार नहीं होती। लगे रहो!", "तुम्हारा संकल्प ही तुम्हारी सबसे बड़ी ताकत है। बेहतरीन!", "आज की मेहनत, कल तुम्हारे सपनों को हकीकत में बदलेगी। शानदार!", "धीरज रखो, तुम्हारी मेहनत ज़रूर रंग लाएगी। बहुत बढ़िया!", "सपनों को सच करने के लिए, पहले सपने देखना ज़रूरी है। उत्तम!", "मुश्किलें केवल उन्हें मिलती हैं जो उन्हें हराने का दम रखते हैं।", "जीत निश्चित है, अगर तुम हार मानने को तैयार नहीं हो।", "तुम वो सब कर सकते हो जो तुम सोच सकते हो। आगे बढ़ो!", "एक समय में एक दिन, और हर दिन पूरी लगน से।", "संघर्ष जितना बड़ा होगा, जीत उतनी ही शानदार होगी।", "खुद पर विश्वास रखो, तुम्हारे अंदर ब्रह्मांड की शक्ति है।", "आज का दर्द, कल की जीत है। बहुत अच्छा काम!", "सफलता उन्हें मिलती है जिनके इरादों में जान होती है।", "हर छोटा कदम एक बड़ी मंजिल का हिस्सा है।", "शिक्षा सबसे शक्तिशाली हथियार है जिसे आप दुनिया बदलने के लिए उपयोग कर सकते हैं।", "अपने लक्ष्य को ऊंचा रखो और तब तक मत रुको जब तक तुम उसे हासिल नहीं कर लेते।", "अगर तुम सूरज की तरह चमकना चाहते हो, तो पहले सूरज की तरह जलो।", "समय सीमित है, इसे किसी और की जिंदगी जी कर बर्बाद मत करो।", "कड़ी मेहनत का कोई विकल्प नहीं है।", "गिरकर उठना और फिर से प्रयास करना ही असली जीत है।", "जो पढ़ते हैं, वही लड़ते हैं।", "तुम्हारी मेहनत तुम्हारा कल लिखेगी।", "ज्ञान में निवेश सर्वोत्तम ब्याज देता है।", "आत्म-विश्वास और कड़ी मेहनत, असफलता नामक बीमारी को मारने के लिए सबसे बढ़िया दवाई है।", "सपनों को पाने के लिए समझदार नहीं, पागल बनना पड़ता है।", "अगर आप महानता हासिल करना चाहते हैं तो इजाजत लेना बंद कर दें।", "जो छात्र प्रश्न पूछता है, वह पाँच मिनट के लिए मूर्ख रहता है, लेकिन जो पूछता ही नहीं, वह हमेशा के लिए मूर्ख रहता है।", "आज एक पाठक, कल एक नेता। मिशन पूरा हुआ!", "विजेता वो नहीं बनते जो कभी असफल नहीं हुए, बल्कि वो बनते हैं जो कभी हार नहीं मानते।", "आपका भविष्य उससे बनता है जो आप आज करते हैं, कल नहीं।", "अनुशासन ही लक्ष्यों और उपलब्धि के बीच का पुल है।"
         ];
+        
+        const dayColors = {
+             0: 'bg-red-100',    // Sunday
+             1: 'bg-orange-100', // Monday
+             2: 'bg-amber-100',  // Tuesday
+             3: 'bg-yellow-100', // Wednesday
+             4: 'bg-lime-100',   // Thursday
+             5: 'bg-green-100',  // Friday
+             6: 'bg-teal-100',   // Saturday
+        };
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        // Function to generate the checklist for all 30 days of September
+
         function generateChecklist() {
             for (let i = 1; i <= totalDays; i++) {
+                const date = new Date(year, month, i);
+                const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, etc.
                 const dayId = `day-${i}`;
                 const quote = motivationalQuotes[(i - 1) % motivationalQuotes.length];
 
                 const card = document.createElement('div');
                 card.id = dayId;
-                card.className = 'day-card bg-white p-5 rounded-xl shadow-md border-2 border-transparent transition-all duration-300';
-                card.innerHTML = `
-                    <h3 class="font-bold text-lg text-gray-700 border-b pb-2 mb-3">September ${i}</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="font-semibold text-blue-700 text-sm mb-2">Lectures</p>
-                            <div class="space-y-2 pl-2">
-                                <label for="${dayId}-task1" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task1" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Physics Lecture</span></label>
-                                <label for="${dayId}-task2" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task2" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Chemistry Lecture</span></label>
-                                <label for="${dayId}-task3" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task3" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Biology Lecture</span></label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <p class="font-semibold text-blue-700 text-sm mb-2">NCERT</p>
-                             <div class="space-y-2 pl-2">
-                                <label for="${dayId}-task4" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task4" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">Read NCERT (3 Hours)</span></label>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <p class="font-semibold text-blue-700 text-sm mb-2">MCQ Practice</p>
-                            <div class="space-y-2 pl-2">
-                                <label for="${dayId}-task5" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task5" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">45 Physics MCQs</span></label>
-                                <label for="${dayId}-task6" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task6" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">45 Chemistry MCQs</span></label>
-                                <label for="${dayId}-task7" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task7" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"><span class="ml-3 text-gray-700">90 Biology MCQs</span></label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <p class="font-semibold text-blue-700 text-sm mb-2">Self-Study Tracker</p>
-                             <div class="space-y-2 pl-2 flex items-center">
-                                <input type="number" id="${dayId}-study-hours" class="w-20 p-1.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="0">
-                                <span class="ml-3 text-gray-700">Total Hours Studied</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <h4 class="font-semibold text-sm text-gray-600 mb-2">Daily Analysis & Notes</h4>
-                        <textarea id="${dayId}-notes" class="w-full h-28 p-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="What I did right...\nWhat I did wrong...\nWhat to improve for tomorrow..."></textarea>
-                    </div>
-
-                    <div id="${dayId}-motivation" class="motivational-quote mt-4 p-3 bg-green-100 text-green-800 rounded-lg text-center font-medium">
-                        ${quote}
-                    </div>
-                `;
+                
+                if (dayOfWeek === 0) { // It's Sunday
+                    card.className = 'day-card review-day p-5 rounded-xl shadow-lg border-2 transition-all duration-300 md:col-span-2 lg:col-span-3';
+                    card.innerHTML = generateSundayReviewContent(i, dayOfWeek, quote);
+                } else {
+                    card.className = 'day-card bg-white p-5 rounded-xl shadow-md border-2 border-transparent transition-all duration-300';
+                    card.innerHTML = generateDailyContent(i, dayOfWeek, quote);
+                }
                 checklistGrid.appendChild(card);
+                if(dayOfWeek === 0) calculateWeeklyHours(i);
             }
         }
-
-        // Function to check completion status and save state
-        function saveData(dayIndex) {
+        
+        function generateDailyContent(dayIndex, dayOfWeek, quote) {
             const dayId = `day-${dayIndex}`;
-            const tasks = Array.from({length: 7}, (_, i) => document.getElementById(`${dayId}-task${i + 1}`));
-            const notes = document.getElementById(`${dayId}-notes`);
-            const studyHours = document.getElementById(`${dayId}-study-hours`);
-            const motivationDiv = document.getElementById(`${dayId}-motivation`);
-            const dayCard = document.getElementById(dayId);
+            return `
+                <h3 class="font-bold text-lg text-gray-700 border-b pb-2 mb-3 flex justify-between items-center ${dayColors[dayOfWeek]} rounded-t-md p-2 -m-5 mb-3">
+                    <span>September ${dayIndex}</span>
+                    <span class="text-sm font-medium text-gray-500">${dayNames[dayOfWeek]}</span>
+                </h3>
+                <div class="space-y-4">
+                    <!-- Checklists -->
+                     <div><p class="font-semibold text-blue-700 text-sm mb-2">Lectures</p><div class="space-y-2 pl-2"><label for="${dayId}-task1" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task1" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Physics</span></label><label for="${dayId}-task2" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task2" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Chemistry</span></label><label for="${dayId}-task3" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task3" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Biology</span></label></div></div>
+                     <div><p class="font-semibold text-green-700 text-sm mb-2">NCERT</p><div class="space-y-2 pl-2"><label for="${dayId}-task4" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task4" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">Read/Revise (3 Hrs)</span></label></div></div>
+                     <div><p class="font-semibold text-red-700 text-sm mb-2">MCQ Practice <span class="text-red-500 font-bold">(MUST)</span></p><div class="space-y-2 pl-2"><label for="${dayId}-task5" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task5" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">45 Physics</span></label><label for="${dayId}-task6" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task6" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">45 Chemistry</span></label><label for="${dayId}-task7" class="flex items-center cursor-pointer"><input type="checkbox" id="${dayId}-task7" class="h-5 w-5 r r-c"><span class="ml-3 text-gray-700">90 Biology</span></label></div></div>
+                     <div>
+                        <p class="font-semibold text-blue-700 text-sm mb-2">Self-Study Tracker</p>
+                        <div class="space-y-2 pl-2 flex items-center">
+                            <input type="number" id="${dayId}-study-hours" class="w-20 p-1.5 border border-gray-300 rounded-md text-sm" placeholder="Hours">
+                            <button id="${dayId}-log-hours-btn" class="ml-3 px-3 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Log Hrs</button>
+                        </div>
+                     </div>
+                </div>
+                <div class="mt-6"><h4 class="font-semibold text-sm text-gray-600 mb-2">Daily Analysis</h4><textarea id="${dayId}-notes" class="w-full h-28 p-2 border rounded-md text-sm" placeholder="What went right...\nWhat went wrong...\nImprovements..."></textarea></div>
+                <div id="${dayId}-motivation" class="motivational-quote mt-4 p-3 bg-green-100 text-green-800 rounded-lg text-center font-medium">${quote}</div>
+            `;
+        }
+        
+        function generateSundayReviewContent(dayIndex, dayOfWeek, quote) {
+             const dayId = `day-${dayIndex}`;
+             return `
+                <h3 class="font-bold text-xl text-purple-800 border-b-2 border-purple-200 pb-2 mb-4 flex justify-between items-center bg-purple-200 rounded-t-md p-3 -m-5 mb-4">
+                    <span>Weekly Review: September ${dayIndex}</span>
+                    <span class="text-lg font-semibold">${dayNames[dayOfWeek]}</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Side: Weekly Reflection -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold text-gray-700">This Week's Reflection</h4>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <label class="font-semibold text-gray-600">Total Hours Studied This Week:</label>
+                            <p id="${dayId}-weekly-hours" class="text-2xl font-bold text-indigo-600">0 Hours</p>
+                             <div class="mt-2">
+                                <div class="flex justify-between text-sm font-medium text-gray-600">
+                                    <span>Weekly Goal</span>
+                                    <span>70 Hours</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                    <div id="${dayId}-weekly-progress" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="bg-white p-4 rounded-lg shadow space-y-3">
+                            <div><label for="${dayId}-review-best" class="font-semibold text-gray-600 mb-1 block">Did you give your best this week?</label><textarea id="${dayId}-review-best" rows="2" class="w-full p-2 border rounded-md text-sm" placeholder="Yes/No and why..."></textarea></div>
+                            <div><label for="${dayId}-review-right" class="font-semibold text-gray-600 mb-1 block">What went right?</label><textarea id="${dayId}-review-right" rows="3" class="w-full p-2 border rounded-md text-sm" placeholder="List your wins, big or small..."></textarea></div>
+                            <div><label for="${dayId}-review-wrong" class="font-semibold text-gray-600 mb-1 block">What went wrong?</label><textarea id="${dayId}-review-wrong" rows="3" class="w-full p-2 border rounded-md text-sm" placeholder="Identify the challenges and obstacles..."></textarea></div>
+                            <div><label for="${dayId}-review-improve" class="font-semibold text-gray-600 mb-1 block">Plan to improve for next week:</label><textarea id="${dayId}-review-improve" rows="3" class="w-full p-2 border rounded-md text-sm" placeholder="Actionable steps for the coming week..."></textarea></div>
+                        </div>
+                    </div>
+                    <!-- Right Side: Test Analysis -->
+                    <div class="space-y-4">
+                         <h4 class="text-lg font-bold text-gray-700">Sunday Test Analysis</h4>
+                         <div class="bg-white p-4 rounded-lg shadow space-y-3">
+                             <p class="font-semibold text-gray-600">Enter Your Scores:</p>
+                             <div class="grid grid-cols-[auto,1fr,auto] items-center gap-x-3 gap-y-2">
+                                <label>Biology:</label>
+                                <input type="number" id="${dayId}-score-bio" class="w-full p-1.5 border rounded-md text-sm" placeholder="0">
+                                <span class="text-gray-500">/ 360</span>
+                                
+                                <label>Physics:</label>
+                                <input type="number" id="${dayId}-score-phy" class="w-full p-1.5 border rounded-md text-sm" placeholder="0">
+                                <span class="text-gray-500">/ 180</span>
 
-            const isCompleted = tasks.every(task => task.checked);
+                                <label>Chemistry:</label>
+                                <input type="number" id="${dayId}-score-chem" class="w-full p-1.5 border rounded-md text-sm" placeholder="0">
+                                <span class="text-gray-500">/ 180</span>
+                             </div>
+                             <hr class="my-2"/>
+                             <div class="flex justify-between items-center mt-2">
+                                <span class="font-bold text-indigo-800">Total Score:</span>
+                                <div>
+                                    <span id="${dayId}-score-total" class="font-bold text-xl text-indigo-800">0</span>
+                                    <span class="font-bold text-indigo-800">/ 720</span>
+                                </div>
+                             </div>
+                             <hr/>
+                            <div><label for="${dayId}-test-mistakes" class="font-semibold text-gray-600 mb-1 block">Where did you make the most mistakes?</label><textarea id="${dayId}-test-mistakes" rows="3" class="w-full p-2 border rounded-md text-sm" placeholder="e.g., specific topics, calculation errors, conceptual gaps..."></textarea></div>
+                            <div><label for="${dayId}-test-improve" class="font-semibold text-gray-600 mb-1 block">How will you improve on these mistakes?</label><textarea id="${dayId}-test-improve" rows="3" class="w-full p-2 border rounded-md text-sm" placeholder="e.g., revise theory, more practice, focus on weak areas..."></textarea></div>
+                         </div>
+                         <div class="mt-4 p-3 bg-purple-100 text-purple-800 rounded-lg text-center font-medium">समीक्षा प्रगति की कुंजी है। अपनी गलतियों से सीखें और मजबूत बनें।</div>
+                    </div>
+                </div>
+             `;
+        }
 
-            if (isCompleted) {
-                motivationDiv.classList.add('show');
-                dayCard.classList.add('completed');
-            } else {
-                motivationDiv.classList.remove('show');
-                dayCard.classList.remove('completed');
+        function calculateWeeklyHours(sundayIndex) {
+            let totalHours = 0;
+            const sundayDate = new Date(year, month, sundayIndex);
+            const startDayIndex = sundayIndex - sundayDate.getDay(); // This week's Monday might not be 1, it's relative
+            
+            // In September 2024, the first day is a Sunday. So the week starts on day 1.
+            // For other months, you might need more robust logic.
+            const weekStart = Math.max(1, sundayIndex - 6);
+
+
+            for(let i = weekStart; i <= sundayIndex; i++) {
+                const dayId = `day-${i}`;
+                if(document.getElementById(dayId)){
+                    const savedState = localStorage.getItem(`neet-roadmap-ashutosh-${dayId}`);
+                    if(savedState) {
+                        const dayState = JSON.parse(savedState);
+                        // Make sure we check studyHours for non-sundays
+                        if (dayState.studyHours !== undefined) {
+                           totalHours += parseFloat(dayState.studyHours) || 0;
+                        }
+                    }
+                }
             }
             
-            // Save state to localStorage
-            const dayState = {
-                tasks: tasks.map(task => task.checked),
-                notes: notes.value,
-                studyHours: studyHours.value
-            };
-            localStorage.setItem(`neet-roadmap-ashutosh-${dayId}`, JSON.stringify(dayState));
+            document.getElementById(`day-${sundayIndex}-weekly-hours`).innerText = `${totalHours.toFixed(1)} Hours`;
+            const weeklyProgressBar = document.getElementById(`day-${sundayIndex}-weekly-progress`);
+            const percentage = Math.min(100, (totalHours / 70) * 100);
+            weeklyProgressBar.style.width = `${percentage}%`;
+        }
+        
+        function updateTotalScore(dayIndex) {
+            const dayId = `day-${dayIndex}`;
+            const bioScore = parseInt(document.getElementById(`${dayId}-score-bio`).value) || 0;
+            const phyScore = parseInt(document.getElementById(`${dayId}-score-phy`).value) || 0;
+            const chemScore = parseInt(document.getElementById(`${dayId}-score-chem`).value) || 0;
+            const total = bioScore + phyScore + chemScore;
+            document.getElementById(`${dayId}-score-total`).innerText = total;
+        }
 
+        function saveData(dayIndex) {
+            const dayId = `day-${dayIndex}`;
+            const date = new Date(year, month, dayIndex);
+            const dayOfWeek = date.getDay();
+            const dayCard = document.getElementById(dayId);
+
+            let dayState = {};
+            let isCompleted = false;
+
+            if (dayOfWeek === 0) { // Sunday
+                dayState = {
+                    reviewBest: document.getElementById(`${dayId}-review-best`).value,
+                    reviewRight: document.getElementById(`${dayId}-review-right`).value,
+                    reviewWrong: document.getElementById(`${dayId}-review-wrong`).value,
+                    reviewImprove: document.getElementById(`${dayId}-review-improve`).value,
+                    scoreBio: document.getElementById(`${dayId}-score-bio`).value,
+                    scorePhy: document.getElementById(`${dayId}-score-phy`).value,
+                    scoreChem: document.getElementById(`${dayId}-score-chem`).value,
+                    testMistakes: document.getElementById(`${dayId}-test-mistakes`).value,
+                    testImprove: document.getElementById(`${dayId}-test-improve`).value,
+                };
+                calculateWeeklyHours(dayIndex);
+                updateTotalScore(dayIndex); // Update total when saving sunday data
+            } else { // Other days
+                const tasks = Array.from({length: 7}, (_, i) => document.getElementById(`${dayId}-task${i + 1}`));
+                dayState = {
+                    tasks: tasks.map(task => task.checked),
+                    notes: document.getElementById(`${dayId}-notes`).value,
+                    studyHours: document.getElementById(`${dayId}-study-hours`).value,
+                };
+                isCompleted = tasks.every(task => task.checked);
+                const motivationDiv = document.getElementById(`${dayId}-motivation`);
+                if (isCompleted) {
+                    motivationDiv.classList.add('show');
+                    dayCard.classList.add('completed');
+                } else {
+                    motivationDiv.classList.remove('show');
+                    dayCard.classList.remove('completed');
+                }
+                 // After saving daily data, find the relevant Sunday and update its weekly total
+                const dayOfWeekForUpdate = date.getDay();
+                const sundayIndex = dayIndex + (7 - dayOfWeekForUpdate) % 7;
+                if(document.getElementById(`day-${sundayIndex}-weekly-progress`)){
+                    calculateWeeklyHours(sundayIndex);
+                }
+            }
+            
+            localStorage.setItem(`neet-roadmap-ashutosh-${dayId}`, JSON.stringify(dayState));
             updateProgressBar();
         }
 
-        // Function to load state from localStorage
         function loadState() {
             for (let i = 1; i <= totalDays; i++) {
                 const dayId = `day-${i}`;
                 const savedState = localStorage.getItem(`neet-roadmap-ashutosh-${dayId}`);
                 if (savedState) {
                     const dayState = JSON.parse(savedState);
-                    const tasks = Array.from({length: 7}, (_, j) => document.getElementById(`${dayId}-task${j + 1}`));
-                    
-                    tasks.forEach((task, index) => {
-                        if (dayState.tasks && dayState.tasks[index] !== undefined) {
-                            task.checked = dayState.tasks[index];
-                        }
-                    });
-                    document.getElementById(`${dayId}-notes`).value = dayState.notes || '';
-                    document.getElementById(`${dayId}-study-hours`).value = dayState.studyHours || '';
-                    
-                    saveData(i); // Re-validate and update UI based on loaded state
+                    const date = new Date(year, month, i);
+                    const dayOfWeek = date.getDay();
+                    if(dayOfWeek === 0) { // Sunday
+                        document.getElementById(`${dayId}-review-best`).value = dayState.reviewBest || '';
+                        document.getElementById(`${dayId}-review-right`).value = dayState.reviewRight || '';
+                        document.getElementById(`${dayId}-review-wrong`).value = dayState.reviewWrong || '';
+                        document.getElementById(`${dayId}-review-improve`).value = dayState.reviewImprove || '';
+                        document.getElementById(`${dayId}-score-bio`).value = dayState.scoreBio || '';
+                        document.getElementById(`${dayId}-score-phy`).value = dayState.scorePhy || '';
+                        document.getElementById(`${dayId}-score-chem`).value = dayState.scoreChem || '';
+                        document.getElementById(`${dayId}-test-mistakes`).value = dayState.testMistakes || '';
+                        document.getElementById(`${dayId}-test-improve`).value = dayState.testImprove || '';
+                        updateTotalScore(i); // Update total on load
+                    } else { // Other days
+                        const tasks = Array.from({length: 7}, (_, j) => document.getElementById(`${dayId}-task${j + 1}`));
+                        tasks.forEach((task, index) => {
+                            if (dayState.tasks && dayState.tasks[index] !== undefined) task.checked = dayState.tasks[index];
+                        });
+                        document.getElementById(`${dayId}-notes`).value = dayState.notes || '';
+                        document.getElementById(`${dayId}-study-hours`).value = dayState.studyHours || '';
+                    }
+                    saveData(i);
                 }
             }
         }
         
-        // Function to update the overall progress bar
         function updateProgressBar() {
             let completedDays = 0;
             for (let i = 1; i <= totalDays; i++) {
-                const dayId = `day-${i}`;
-                 const tasks = Array.from({length: 7}, (_, j) => document.getElementById(`${dayId}-task${j + 1}`));
-                if (tasks.every(task => task && task.checked)) {
-                    completedDays++;
-                }
+                 const dayId = `day-${i}`;
+                 const date = new Date(year, month, i);
+                 if(date.getDay() !== 0) { // Only count weekdays for progress
+                    const tasks = Array.from({length: 7}, (_, j) => document.getElementById(`${dayId}-task${j + 1}`));
+                    if (tasks.every(task => task && task.checked)) completedDays++;
+                 }
             }
-            const percentage = Math.round((completedDays / totalDays) * 100);
+            // Progress based on non-sunday days
+            const nonSundayDays = Array.from({length: totalDays}, (_, i) => new Date(year, month, i + 1)).filter(d => d.getDay() !== 0).length;
+            const percentage = nonSundayDays > 0 ? Math.round((completedDays / nonSundayDays) * 100) : 0;
             progressBar.style.width = `${percentage}%`;
             progressText.innerText = `${percentage}%`;
         }
 
-        // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
             generateChecklist();
             
-            // Add event listeners to all checkboxes, textareas, and inputs
             for (let i = 1; i <= totalDays; i++) {
                 const dayId = `day-${i}`;
-                for(let j = 1; j <= 7; j++) {
-                    document.getElementById(`${dayId}-task${j}`).addEventListener('change', () => saveData(i));
+                const date = new Date(year, month, i);
+                const dayOfWeek = date.getDay();
+
+                if (dayOfWeek === 0) { // Sunday event listeners
+                    const fields = ['review-best', 'review-right', 'review-wrong', 'review-improve', 'score-bio', 'score-phy', 'score-chem', 'test-mistakes', 'test-improve'];
+                    fields.forEach(field => {
+                        document.getElementById(`${dayId}-${field}`).addEventListener('input', () => saveData(i));
+                    });
+                } else { // Other days event listeners
+                    for(let j = 1; j <= 7; j++) document.getElementById(`${dayId}-task${j}`).addEventListener('change', () => saveData(i));
+                    document.getElementById(`${dayId}-notes`).addEventListener('input', () => saveData(i));
+                    document.getElementById(`${dayId}-study-hours`).addEventListener('input', () => saveData(i)); // Keep this to save value as it's typed
+                    document.getElementById(`${dayId}-log-hours-btn`).addEventListener('click', () => saveData(i));
                 }
-                document.getElementById(`${dayId}-notes`).addEventListener('input', () => saveData(i));
-                document.getElementById(`${dayId}-study-hours`).addEventListener('input', () => saveData(i));
             }
             
             loadState();
@@ -260,4 +375,14 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
